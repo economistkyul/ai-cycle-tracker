@@ -1,0 +1,17 @@
+# 실계좌 데이터 — 절대 커밋 금지
+data/private/
+!data/private/.gitkeep
+!data/private/account_values.example.yaml
+
+# 금액이 포함될 수 있는 산출물
+output/
+*.pdf
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 환경변수 (API 키 등)
+.env
