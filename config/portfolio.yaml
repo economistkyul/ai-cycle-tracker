@@ -1,0 +1,240 @@
+version: 2
+factor_map:
+  ai_semiconductors:
+    semiconductor: 1.0
+    nasdaq_megacap: 0.6
+    ai_capex: 0.8
+    beta: 1.3
+  leveraged_3x:
+    semiconductor: 0.5
+    nasdaq_megacap: 1.0
+    ai_capex: 0.5
+    beta: 3.0
+  leveraged_2x_3x:
+    semiconductor: 0.3
+    nasdaq_megacap: 1.0
+    ai_capex: 0.4
+    beta: 2.6
+  megacap_high_beta:
+    semiconductor: 0.1
+    nasdaq_megacap: 1.0
+    ai_capex: 0.6
+    beta: 1.4
+  optical:
+    semiconductor: 0.3
+    nasdaq_megacap: 0.1
+    ai_capex: 1.0
+    beta: 1.6
+  power_secondary:
+    semiconductor: 0.0
+    nasdaq_megacap: 0.1
+    ai_capex: 0.9
+    beta: 1.2
+  robotics:
+    semiconductor: 0.1
+    nasdaq_megacap: 0.0
+    ai_capex: 0.6
+    beta: 1.8
+  nasdaq_beta:
+    semiconductor: 0.2
+    nasdaq_megacap: 1.0
+    ai_capex: 0.5
+    beta: 1.1
+  semiconductors:
+    semiconductor: 1.0
+    nasdaq_megacap: 0.5
+    ai_capex: 0.8
+    beta: 1.3
+  em_others:
+    semiconductor: 0.0
+    nasdaq_megacap: 0.0
+    ai_capex: 0.0
+    beta: 0.9
+  pension_irp:
+    semiconductor: 0.2
+    nasdaq_megacap: 0.4
+    ai_capex: 0.2
+    beta: 0.8
+  unallocated:
+    semiconductor: 0.0
+    nasdaq_megacap: 0.0
+    ai_capex: 0.0
+    beta: 0.0
+leveraged_etf_rules:
+  SOXL:
+    leverage_multiple: 3
+    reset_frequency: daily
+    benchmark: ICE Semiconductor
+    max_weight_pct: 10
+    max_effective_exposure_pct: 30
+    reduction_rule: 50일선 1일 종가 이탈 시 50% 축소
+    exit_rule: 20일선·50일선 동시 이탈 시 전량
+    reentry_rule: 50일선 회복 후 5일 확인
+    cooldown_period_days: 10
+    provisional: true
+    break_confirm_days: 1
+    reentry_confirm_days: 5
+  TQQQ:
+    leverage_multiple: 3
+    reset_frequency: daily
+    benchmark: Nasdaq-100
+    max_weight_pct: 10
+    max_effective_exposure_pct: 30
+    reduction_rule: 50일선 1일 종가 이탈 시 50% 축소
+    exit_rule: 20일선·50일선 동시 이탈 시 전량
+    reentry_rule: 50일선 회복 후 5일 확인
+    cooldown_period_days: 10
+    provisional: true
+    break_confirm_days: 1
+    reentry_confirm_days: 5
+  UPRO:
+    leverage_multiple: 3
+    reset_frequency: daily
+    benchmark: S&P 500
+    max_weight_pct: 7
+    max_effective_exposure_pct: 21
+    reduction_rule: 50일선 1일 종가 이탈 시 50% 축소
+    exit_rule: 20일선·50일선 동시 이탈 시 전량
+    reentry_rule: 50일선 회복 후 5일 확인
+    cooldown_period_days: 10
+    provisional: true
+    break_confirm_days: 1
+    reentry_confirm_days: 5
+  QLD:
+    leverage_multiple: 2
+    reset_frequency: daily
+    benchmark: Nasdaq-100
+    max_weight_pct: 5
+    max_effective_exposure_pct: 10
+    reduction_rule: 50일선 1일 종가 이탈 시 50% 축소
+    exit_rule: 50일선 3일 이탈 시 전량
+    reentry_rule: 50일선 회복 후 5일 확인
+    cooldown_period_days: 10
+    provisional: true
+    break_confirm_days: 1
+    reentry_confirm_days: 5
+accounts:
+  account_a:
+    description: 장기 사이클 라이딩 — 본대
+    country_mix:
+      US: 0.65
+      KR: 0.3
+      TW: 0.05
+    currency_mix:
+      USD: 0.65
+      KRW: 0.35
+    buckets:
+      ai_semiconductors:
+        weight_pct: 30
+        sell_bucket: last
+        holdings:
+        - SK하이닉스
+        - 삼성전자
+        - 마이크론
+        - TSMC
+        - 엔비디아
+        - 마벨
+        - ARM
+        - 브로드컴
+        - AMD
+        - ASML
+      leveraged_3x:
+        weight_pct: 21
+        sell_bucket: rule_based
+        holdings:
+        - SOXL
+        - TQQQ
+        - UPRO
+      megacap_high_beta:
+        weight_pct: 12
+        sell_bucket: mid
+        holdings:
+        - 테슬라
+        - 알파벳
+        - 마이크로소프트
+      optical:
+        weight_pct: 10
+        sell_bucket: mid_late
+        holdings:
+        - 루멘텀
+        - 코히어런트
+        - 패브리넷
+        - AAOI
+        - 코닝
+      power_secondary:
+        weight_pct: 9
+        sell_bucket: structural
+        holdings:
+        - 버티브
+        - 블룸에너지
+        - GE버노바
+        - 나비타스
+        - 넥스트래커
+        - MPS
+        - 두산에너빌리티
+        - 비나텍
+      pension_irp:
+        weight_pct: 10
+        sell_bucket: hold
+      robotics:
+        weight_pct: 3
+        sell_bucket: first
+        holdings:
+        - 레인보우로보틱스
+        - 두산로보틱스
+        - 로보티즈
+      unallocated:
+        weight_pct: 5
+        sell_bucket: hold
+        note: v1 감사에서 발견된 미분류 5% — 실스냅샷 대조로 분류 필요
+    structural_risks:
+    - 현금 버퍼 근제로
+    - 3x 레버리지 명목 21% = 실효 63%
+  account_b:
+    description: 위성 계좌 — 사이클 끝 정리 후 갈아타기 전제
+    country_mix:
+      US: 0.9
+      KR: 0.05
+      Other: 0.05
+    currency_mix:
+      USD: 0.75
+      KRW: 0.25
+    buckets:
+      nasdaq_beta:
+        weight_pct: 60
+        sell_bucket: mid
+        holdings:
+        - QQQ
+        - 나스닥100ETF
+        - 테크TOP10
+        - VUG
+        - 테슬라
+        - 알파벳
+        - 마이크로소프트
+        - S&P500ETF
+      semiconductors:
+        weight_pct: 26
+        sell_bucket: last
+        holdings:
+        - SOXX
+        - SMH
+        - 엔비디아
+        - 브로드컴
+        - 마이크론
+      leveraged_2x_3x:
+        weight_pct: 7
+        sell_bucket: rule_based
+        holdings:
+        - TQQQ
+        - QLD
+      em_others:
+        weight_pct: 7
+        sell_bucket: first
+        holdings:
+        - 인도ETF
+        - 베트남ETF
+        - EM_ETF
+        - 금융
+    pending_actions:
+    - QRFT 상장폐지 → 2026-07-22 전 매도, SMH 교체 (recommendation_only)
+leveraged_bucket_weighting: equal_weight_assumption

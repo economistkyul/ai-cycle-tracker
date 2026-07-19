@@ -1,0 +1,18 @@
+core_cpi:
+  entered_at: '2026-07-17'
+  last_changed: '2026-07-17'
+  prev_state: NONE
+  reason: '미 Core CPI (YoY): 임계 근접 (현재 2.9 / 트리거 3.0)'
+  state: ARMED
+final:
+  entered_at: '2026-07-17'
+  last_changed: '2026-07-17'
+  prev_state: NONE
+  reason: '핵심 축 데이터 누락: [''technical_regime'', ''earnings_regime''] → 판정 보류'
+  state: UNKNOWN
+us10y:
+  entered_at: '2026-07-17'
+  last_changed: '2026-07-17'
+  prev_state: NONE
+  reason: '미 10Y 국채금리: 여유 +0.55'
+  state: CLEAR

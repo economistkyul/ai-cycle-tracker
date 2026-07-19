@@ -1,0 +1,14 @@
+# 실계좌 스냅샷 템플릿
+# ⚠️ 이 파일에도 계좌번호·예금주명·증권사명은 절대 기입하지 않는다.
+#    식별자는 account_a / account_b 만 사용.
+# 작성 후 data/private/snapshot_YYYYMMDD.yaml 로 저장 (gitignored — 커밋되지 않음)
+as_of: "YYYY-MM-DD"
+account: "account_a | account_b"
+total_value_krw: 0
+positions:
+  - name: ""
+    ticker: ""
+    bucket: ""        # portfolio.yaml의 버킷명
+    quantity: 0
+    value_krw: 0
+    cost_krw: 0

@@ -1,0 +1,5 @@
+as_of: "2026-07-11"
+metrics:
+  us10y:    { value: 4.44, unit: pct, observation_date: "2026-07-10", release_date: "2026-07-10", fetched_at: "2026-07-11", source: "manual", frequency: daily, revision_status: final, stale_after_days: 10 }
+  core_cpi: { value: 2.9,  unit: pct, observation_date: "2026-05-31", release_date: "2026-06-10", fetched_at: "2026-07-11", source: "manual", frequency: monthly, revision_status: initial, stale_after_days: 45 }
+  usdkrw_trend: { value: "stable_or_strengthening", observation_date: "2026-07-10", fetched_at: "2026-07-11", source: "manual", stale_after_days: 14 }

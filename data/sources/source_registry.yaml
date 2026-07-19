@@ -1,0 +1,15 @@
+# 리서치 소스 레지스트리 — 서사(Narrative) / 관측증거(Evidence) / 신호(Signal) 3층 분리 원칙
+# 원문 미확보 시: confidence 하향 + "요약문 기반" 표시. 읽지 않은 글을 읽은 것처럼 기록 금지.
+sources:
+  egzion:
+    name: "이그전 — 이은택 (KB증권)"
+    primary_url: "https://m.blog.naver.com/PostList.naver?blogId=egzion&tab=1"
+    mirror_url: "https://t.me/s/egzion"
+    fallback: ["KB증권 리서치 PDF (project_knowledge)"]
+  yardeni:
+    name: "Yardeni Research"
+    primary_url: "https://www.yardeni.com/"
+    quicktakes: "https://www.yardeniquicktakes.com/"
+    archive: "https://archive.yardeni.com/"
+    rule: "공식 자료 우선, 언론 인터뷰는 보조"
+entries: []   # {source, title, source_date, url, key_claims[], layer: narrative|evidence, confidence, fetched_at}

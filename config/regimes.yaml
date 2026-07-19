@@ -1,0 +1,42 @@
+version: 1
+# 통합 의사결정 엔진의 6축. 데이터 미확보 축은 UNKNOWN (CLEAR 아님).
+
+axes:
+  structural_regime:
+    states: [STRUCTURAL_BULL, BULL_WITH_LATE_CYCLE_RISK, NEUTRAL, STRUCTURAL_BEAR, UNKNOWN]
+    inputs: [usdkrw_trend, foreign_net_flow, oil_trend, kr_eps_revision, kospi_fwd_pe, restocking_cycle]
+    min_inputs_required: 3
+  earnings_regime:
+    states: [BROAD_UPGRADES, NARROW_UPGRADES, FLAT, MULTIPLE_ONLY_RALLY, BROAD_DOWNGRADES, UNKNOWN]
+    inputs: [fwd_eps_13w_change_pct, fwd_eps_4w_change_pct, price_13w_change_pct, neri_proxy]
+    rules:
+      multiple_only_rally: "price_13w > +5% AND fwd_eps_13w < 0"
+    min_inputs_required: 2
+  valuation_regime:
+    states: [CHEAP, FAIR, EXPENSIVE_SUPPORTED, EXPENSIVE_FRAGILE, UNKNOWN]
+    rules:
+      expensive_fragile: "fwd_pe 확장 + fwd_eps 하락 + 금리 상승 동반 시"
+    min_inputs_required: 2
+  technical_regime:
+    states: [TREND_STRONG, EXTENDED, PULLBACK, TREND_WARNING, TREND_BREAK, RECOVERY, UNKNOWN]
+    module: "config/moving_average.yaml"
+  macro_financial_stress:
+    states: [CLEAR, ARMED, FIRED, UNKNOWN]
+    module: "config/triggers.yaml"
+  ai_semiconductor_cycle:
+    states: [EARLY_RECOVERY, EXPANSION, SUPER_CYCLE, OVER_ORDERING, LATE_CYCLE, MARGIN_PEAK, CONTRACTION, UNKNOWN]
+    inputs: [semi_fwd_eps_3m_change, semi_margin_trend, inventory_days_trend, capex_guidance, hbm_pricing]
+    transition_rules:
+      super_cycle_to_over_ordering: "수주잔고 증가 > 출하 증가 AND 재고일수 상승 전환 (provisional)"
+      over_ordering_to_margin_peak: "매출총이익률 정점 후 2분기 연속 하락 (provisional)"
+    min_inputs_required: 3
+
+final_states: [RISK_ON, RISK_ON_EXTENDED, HOLD_WITH_HEDGE, REDUCE_LEVERAGE, DEFENSIVE, EXITING, UNKNOWN]
+
+decision_principles:
+  A: "구조 강세 + 이익 상승 + 50일선 유지 → 집중도만으로 매도 금지"
+  B: "구조 강세 + 50일선 이탈 → 현물 아닌 레버리지/고베타 우선 축소"
+  C: "가격↑ + fEPS↓ + 마진↓ → 취약한 집중 경고 승격"
+  D: "금리↑ + 물가↑ + 스프레드 확대 → macro stress 강화"
+  E: "금리 하락형 붕괴 → emergency override"
+  F: "데이터 누락/노후 → UNKNOWN (CLEAR 금지)"

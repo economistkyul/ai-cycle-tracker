@@ -1,0 +1,10 @@
+version: 2
+windows: { short: 20, mid: 50, long: 200 }
+confirm_days:   # 지수/현물용. 레버리지 ETF는 portfolio.yaml:leveraged_etf_rules가 단일 출처
+  bull_regime: { break_confirm: 3, reentry_confirm: 5 }
+  bear_regime: { break_confirm: 1, reentry_confirm: 10 }
+hysteresis_pct: 1.0
+extended_disparity_pct: 10.0
+pullback_floor_pct: -3.0
+# v2에 있던 asset_class_overrides는 leveraged_etf_rules와 충돌하여 제거됨 (v3)
+provisional: true

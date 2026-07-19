@@ -1,0 +1,52 @@
+version: 2
+mode: recommendation_only        # 자동 주문 전송 없음 — 모든 스텝은 수동 승인 필요
+approval:
+  required: true
+  method: "각 스텝 실행 전 수기 확인 + data/private/execution_log.yaml 기록"
+
+rule_based_first:
+  bucket: rule_based             # SOXL/TQQQ/UPRO/QLD
+  trigger: "레버리지 룰 (moving_average + leveraged_etf_rules) — FIRED 무관 상시 적용"
+  target_reduction_pct: 100
+  deadline_days: 2
+  cash_destination: "USD MMF 또는 원화 예수금"
+
+sequence:
+  - order: 1
+    bucket: first                # 로봇 + EM 위성
+    trigger_state: [FIRED]
+    target_reduction_pct: 100
+    deadline_days: 5
+    confirm_condition: "macro FIRED 확정 (연속확인 충족)"
+    cash_target_pct_after: 10
+  - order: 2
+    bucket: mid                  # 메가캡/나스닥베타
+    trigger_state: [FIRED]
+    target_reduction_pct: 70
+    deadline_days: 10
+    confirm_condition: "50일선 이탈 동반 확인"
+    cash_target_pct_after: 30
+  - order: 3
+    bucket: mid_late             # 광통신
+    trigger_state: [FIRED]
+    target_reduction_pct: 100
+    deadline_days: 7
+    confirm_condition: "정점 확인 또는 TREND_BREAK — 지체 금지 (닷컴: 최후 정점, 최악 하락)"
+    cash_target_pct_after: 45
+  - order: 4
+    bucket: last                 # 반도체
+    trigger_state: [FIRED]
+    target_reduction_pct: 80
+    deadline_days: 20
+    confirm_condition: "semiconductor_cycle ∈ {MARGIN_PEAK, CONTRACTION} 또는 fEPS 수정률 음전환"
+    cash_target_pct_after: 70
+
+krw_override:
+  condition: "krw stage3 (유도값 기준)"
+  action: "한국 상장 포지션 선행 매도 — 시퀀스 무관"
+  target_reduction_pct: 100
+  deadline_days: 5
+
+emergency_override:
+  condition: "config/triggers.yaml:emergency_override 충족"
+  action: "order 1~3 즉시 병렬 실행 권고 (recommendation_only)"
