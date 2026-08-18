@@ -1,1 +1,63 @@
+name: curve-daily
 
+"on":
+  workflow_dispatch:
+  schedule:
+    - cron: "30 22 * * 1-5"
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: curve-daily
+  cancel-in-progress: false
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run trigger tests
+        run: |
+          pip install pytest
+          pytest tests/test_curve_triggers.py -q
+
+      - name: Fetch curve and evaluate
+        id: curve
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          CURVE_OUT: data/curve.json
+        run: python scripts/fetch_curve.py
+
+      - name: Commit changes
+        run: |
+          if git diff --quiet -- data/curve.json; then
+            echo "no change"
+            exit 0
+          fi
+          git config user.name "curve-bot"
+          git config user.email "curve-bot@users.noreply.github.com"
+          git add data/curve.json
+          git commit -m "curve: stage ${{ steps.curve.outputs.stage }} $(date -u +%Y-%m-%d)"
+          git push
+
+      - name: Open issue on trigger
+        if: steps.curve.outputs.alert == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SUMMARY: ${{ steps.curve.outputs.summary }}
+        run: |
+          TITLE="Curve trigger fired $(date -u +%Y-%m-%d)"
+          COUNT=$(gh issue list --state open --search "$TITLE in:title" --json number --jq 'length')
+          if [ "$COUNT" != "0" ]; then
+            echo "issue already open"
+            exit 0
+          fi
+          printf '%s\n\nSee data/curve.json latest block for details.\n' "$SUMMARY" \
+            | gh issue create --title "$TITLE" --label trigger --body-file -
